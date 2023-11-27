@@ -1,15 +1,26 @@
-// create web server
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const http = require('http').Server(app);
+// Create web server
 
-// connect to database
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/comments');
+var express = require('express');
+var router = express.Router();
+var path = require('path');
+var fs = require('fs');
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-// create schema for comments
-const CommentSchema = mongoose.Schema({
+var comments = [];
+var commentsPath = path.join(__dirname, 'comments.json');
 
+// Read comments from comments.json file
+fs.readFile(commentsPath, function(err, data) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+  comments = JSON.parse(data);
+});
 
+// Get comments
+router.get('/', function(req, res) {
+  res.json(comments);
+});
 
